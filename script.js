@@ -1,3 +1,4 @@
+console.log("El archivo JavaScript se ha cargado correctamente.");
 function ejecutarSimuladorDeGastos() {
     let continuarEjecucion = true;
 
@@ -11,8 +12,9 @@ function ejecutarSimuladorDeGastos() {
             if (cancelar) {
                 alert("Gracias por usar el simulador.");
                 return;
+            } else {
+                continue;
             }
-            continue;
         }
 
         const ingreso = parseFloat(ingresoInput);
@@ -42,8 +44,9 @@ function ejecutarSimuladorDeGastos() {
                     if (cancelar) {
                         alert("Gracias por usar el simulador.");
                         return;
+                    } else {
+                        continue;
                     }
-                    continue;
                 }
 
                 gasto = parseFloat(gasto);
@@ -78,6 +81,7 @@ function ejecutarSimuladorDeGastos() {
     }
 }
 
+
 function calcularTotalGastos(gastosTotales) {
     let total = 0;
 
@@ -89,6 +93,4 @@ function calcularTotalGastos(gastosTotales) {
     return total;
 }
 
-document.addEventListener('DOMContentLoaded', (event) => {
-    ejecutarSimuladorDeGastos();
-});
+window.addEventListener('load', ejecutarSimuladorDeGastos);
