@@ -1,4 +1,3 @@
-console.log("El archivo JavaScript se ha cargado correctamente.");
 function ejecutarSimuladorDeGastos() {
     let continuarEjecucion = true;
 
@@ -71,7 +70,7 @@ function ejecutarSimuladorDeGastos() {
 
         // Muestra los resultados al usuario
         if (saldo >= 0) {
-            alert(`Su presupuesto mensual está en equilibrio. Saldo restante: $${saldo.toFixed(2)}`);
+            alert(`Su presupuesto mensual está equilibrado. Saldo restante: $${saldo.toFixed(2)}`);
         } else {
             alert(`Está excediendo su presupuesto. Déficit: $${Math.abs(saldo).toFixed(2)}`);
         }
