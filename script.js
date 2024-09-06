@@ -58,7 +58,7 @@ function ejecutarSimuladorDeGastos() {
                 }
             }
 
-            gastosTotales.push(gasto); // Agrega el gasto al array
+            gastosTotales.push(gasto);
             console.log(`Gastos ingresados hasta ahora: ${gastosTotales}`);
         }
 
@@ -68,7 +68,7 @@ function ejecutarSimuladorDeGastos() {
         const saldo = ingreso - totalGastos;
         console.log(`Saldo restante: ${saldo}`);
 
-        // Muestra los resultados al usuario
+        // Muestra los resultados
         if (saldo >= 0) {
             alert(`Su presupuesto mensual está equilibrado. Saldo restante: $${saldo.toFixed(2)}`);
         } else {
@@ -92,4 +92,4 @@ function calcularTotalGastos(gastosTotales) {
     return total;
 }
 
-window.addEventListener('load', ejecutarSimuladorDeGastos);
+window.addEventListener('load', ejecutarSimuladorDeGastos); //Agregué esto para que el simulador aparezca cuando se termine de cargar la página completamente
