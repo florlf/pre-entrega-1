@@ -10,6 +10,27 @@
 <body>
     <div class="container">
         <h1>SIMULADOR DE GASTOS MENSUALES</h1>
+        <h2>REGISTRAR INGRESOS</h2>
+        <label for="ingreso">Ingrese sus ingresos mensuales:</label>
+        <input type="number" id="ingreso" placeholder="Ej: 500000" />
+        <button id="agregarIngreso">Registrar Ingreso</button>
+
+        <h3>REGISTRAR GASTOS</h3>
+        <label for="categoria">Categoría:</label>
+        <select id="categoria">
+            <option value="alquiler">Alquiler</option>
+            <option value="comida">Comida</option>
+            <option value="transporte">Transporte</option>
+            <option value="otros">Otros</option>
+        </select>
+        
+        <label for="gasto" class="monto">Monto:</label>
+        <input type="number" id="gasto" placeholder="Ej: 40000" />
+        <button id="agregarGasto">Registrar Gasto</button>
+
+        <div id="resultado"></div>
+
+        <button id="reiniciar">Reiniciar Datos</button>
     </div>
     <script src="script.js"></script>
 </body>

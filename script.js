@@ -1,95 +1,118 @@
-function ejecutarSimuladorDeGastos() {
-    let continuarEjecucion = true;
+class SimuladorGastos {
+    constructor() {
+        // Inicializo el ingreso y las categorías de gastos con 0
+        this.ingreso = 0;
+        this.gastos = {
+            alquiler: 0,
+            comida: 0,
+            transporte: 0,
+            otros: 0
+        };
+    }
 
-    while (continuarEjecucion) {
-        // Solicita el ingreso mensual
-        const ingresoInput = prompt("Ingrese su ingreso mensual:");
-        console.log(`Ingreso ingresado: ${ingresoInput}`);
+    // Establezco el ingreso y guardo los datos en localStorage
+    setIngreso(ingreso) {
+        this.ingreso = ingreso;
+        this.guardarDatos();
+    }
 
-        if (ingresoInput === null) {
-            const cancelar = confirm("Se canceló el cuestionario. ¿Desea salir?");
-            if (cancelar) {
-                alert("Gracias por usar el simulador.");
-                return;
-            } else {
-                continue;
-            }
+    // Método para agregar un gasto en la categoría especificada
+    agregarGasto(categoria, gasto) {
+        this.gastos[categoria] += gasto;
+        this.guardarDatos();
+    }
+
+    calcularTotalGastos() {
+        return Object.values(this.gastos).reduce((total, gasto) => total + gasto, 0);
+    }
+
+    calcularSaldo() {
+        return this.ingreso - this.calcularTotalGastos();
+    }
+
+    // Método para guardar los datos en localStorage
+    guardarDatos() {
+        const datos = {
+            ingreso: this.ingreso,
+            gastos: this.gastos,
+        };
+        localStorage.setItem('datosFinancieros', JSON.stringify(datos));
+    }
+
+    // Método para recuperar los datos de localStorage
+    recuperarDatos() {
+        const datos = JSON.parse(localStorage.getItem('datosFinancieros'));
+        if (datos) {
+            this.ingreso = datos.ingreso;
+            this.gastos = datos.gastos;
         }
+    }
 
-        const ingreso = parseFloat(ingresoInput);
-        console.log(`Ingreso convertido a número: ${ingreso}`);
+    // Método para reiniciar los datos
+    reiniciarDatos() {
+        this.ingreso = 0;
+        this.gastos = {
+            alquiler: 0,
+            comida: 0,
+            transporte: 0,
+            otros: 0
+        };
+        localStorage.removeItem('datosFinancieros');
+    }
+}
 
-        // Verifica si el ingreso es válido
-        if (isNaN(ingreso) || ingreso <= 0) {
-            alert("Por favor, ingrese un ingreso válido.");
-            continue;
-        }
+// Función para iniciar el simulador
+function inicializarSimulador() {
+    const simulador = new SimuladorGastos();
+    simulador.recuperarDatos();
 
-        // Solicita los gastos de diferentes categorías
-        const categorias = ["alquiler", "comida", "transporte", "otros"];
-        const gastosTotales = []; // Array para almacenar los gastos ingresados
+    const ingresoInput = document.getElementById('ingreso');
+    const gastoInput = document.getElementById('gasto');
+    const categoriaSelect = document.getElementById('categoria');
+    const botonIngreso = document.getElementById('agregarIngreso');
+    const botonGasto = document.getElementById('agregarGasto');
+    const botonReiniciar = document.getElementById('reiniciar');
+    const resultadoDiv = document.getElementById('resultado');
 
-        for (let i = 0; i < categorias.length; i++) {
-            let gastoValido = false;
-            let gasto;
-
-            while (!gastoValido) {
-                gasto = prompt(`Ingrese el monto para ${categorias[i]}:`);
-                console.log(`Monto ingresado para ${categorias[i]}: ${gasto}`);
-
-                // Verifica si el usuario canceló el prompt
-                if (gasto === null) {
-                    const cancelar = confirm("Se canceló la entrada de datos. ¿Desea salir?");
-                    if (cancelar) {
-                        alert("Gracias por usar el simulador.");
-                        return;
-                    } else {
-                        continue;
-                    }
-                }
-
-                gasto = parseFloat(gasto);
-
-                // Verifica si el gasto es un número válido y no negativo
-                if (!isNaN(gasto) && gasto >= 0) {
-                    gastoValido = true;
-                } else {
-                    alert("Por favor, ingrese un monto de gasto válido (número positivo)");
-                }
-            }
-
-            gastosTotales.push(gasto);
-            console.log(`Gastos ingresados hasta ahora: ${gastosTotales}`);
-        }
-
-        // Calcula el total de gastos y el saldo restante
-        const totalGastos = calcularTotalGastos(gastosTotales);
-        console.log(`Total de gastos: ${totalGastos}`);
-        const saldo = ingreso - totalGastos;
-        console.log(`Saldo restante: ${saldo}`);
-
-        // Muestra los resultados
-        if (saldo >= 0) {
-            alert(`Su presupuesto mensual está equilibrado. Saldo restante: $${saldo.toFixed(2)}`);
+    botonIngreso.addEventListener('click', () => {
+        const ingreso = parseFloat(ingresoInput.value);
+        if (!isNaN(ingreso) && ingreso > 0) {
+            simulador.setIngreso(ingreso);
+            resultadoDiv.innerText = `Ingreso registrado: $${ingreso.toFixed(2)}`;
+            ingresoInput.value = '';
         } else {
-            alert(`Está excediendo su presupuesto. Déficit: $${Math.abs(saldo).toFixed(2)}`);
+            resultadoDiv.innerText = 'Por favor, ingrese un presupuesto válido.';
+        }
+    });
+
+    botonGasto.addEventListener('click', () => {
+        // Verifico si el ingreso se estableció
+        if (simulador.ingreso === 0) {
+            resultadoDiv.innerText = 'Por favor, primero ingrese un presupuesto.';
+            return; // Se sale de la función si no hay ingreso
         }
 
-        continuarEjecucion = confirm("¿Desea realizar otra consulta?");
-        console.log(`¿Desea realizar otra consulta? Respuesta: ${continuarEjecucion}`);
-    }
+        const gasto = parseFloat(gastoInput.value);
+        const categoria = categoriaSelect.value;
+
+        if (!isNaN(gasto) && gasto >= 0) {
+            simulador.agregarGasto(categoria, gasto);
+            const totalGastos = simulador.calcularTotalGastos();
+            const saldo = simulador.calcularSaldo();
+
+            let estado = saldo >= 0 ? 'Su presupuesto está equilibrado.' : `Está en déficit de $${Math.abs(saldo).toFixed(2)}.`;
+            resultadoDiv.innerText = `Gasto en ${categoria}: $${gasto.toFixed(2)}. Total de gastos: $${totalGastos.toFixed(2)}. Saldo: $${saldo.toFixed(2)}. ${estado}`;
+            gastoInput.value = '';
+        } else {
+            resultadoDiv.innerText = 'Por favor, ingrese un monto de gasto válido.';
+        }
+    });
+
+    // Evento para reiniciar el simulador
+    botonReiniciar.addEventListener('click', () => {
+        simulador.reiniciarDatos();
+        resultadoDiv.innerText = 'Simulador reiniciado. Puede ingresar nuevos datos.';
+    });
 }
 
-
-function calcularTotalGastos(gastosTotales) {
-    let total = 0;
-
-    // Suma todos los gastos
-    for (let i = 0; i < gastosTotales.length; i++) {
-        total += gastosTotales[i];
-    }
-
-    return total;
-}
-
-window.addEventListener('load', ejecutarSimuladorDeGastos); //Agregué esto para que el simulador aparezca cuando se termine de cargar la página completamente
+document.addEventListener('DOMContentLoaded', inicializarSimulador);
