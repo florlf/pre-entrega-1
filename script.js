@@ -108,7 +108,7 @@ function inicializarSimulador() {
         }
     });
 
-    // Evento para reiniciar el simulador
+    // Evento para reiniciar el simulador si el usuario quiere realizar una nueva consulta
     botonReiniciar.addEventListener('click', () => {
         simulador.reiniciarDatos();
         resultadoDiv.innerText = 'Simulador reiniciado. Puede ingresar nuevos datos.';
